@@ -8,10 +8,6 @@ export async function registerMeal(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const registerMealParams = z.object({
-    userId: z.string(),
-  })
-
   const registerMealSchema = z.object({
     name: z.string(),
     description: z.string(),
@@ -19,15 +15,21 @@ export async function registerMeal(
     itsInTheDiet: z.boolean(),
   })
 
-  const { userId } = registerMealParams.parse(request.params)
   const { name, description, mealTime, itsInTheDiet } =
     registerMealSchema.parse(request.body)
 
   try {
-    const user = await knex('users').where('id', userId).first().select('*')
+    let sessionId = request.cookies.sessionId
 
-    if (!user) {
-      return reply.status(404).send({ message: 'user not found.' })
+    console.log(sessionId)
+
+    if (!sessionId) {
+      sessionId = randomUUID()
+
+      reply.cookie('sessionId', sessionId, {
+        path: '/',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      })
     }
 
     await knex('meals').insert({
@@ -36,7 +38,7 @@ export async function registerMeal(
       description,
       meal_time: mealTime,
       its_in_the_diet: itsInTheDiet,
-      owner: userId,
+      session_id: sessionId,
     })
 
     return reply.status(201).send()

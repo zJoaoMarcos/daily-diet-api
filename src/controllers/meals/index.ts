@@ -1,15 +1,30 @@
 import { FastifyInstance } from 'fastify'
 import { registerMeal } from './register-meal'
-import { FetchUserMeals } from './fetch-user-meals'
+import { fetchUserMeals } from './fetch-user-meals'
+import { findMealById } from './find-meal-by-id'
+import { deleteMeal } from './delete-meal'
+import { editMeal } from './edit-meal'
+import { checkSessionIdExists } from '../../middlewares/check-session-id-exists'
+import { metrics } from './metrics'
 
 export async function MealsRoutes(app: FastifyInstance) {
-  // TODO:
+  app.addHook('preHandler', checkSessionIdExists)
+
   // create meal
-  app.post(':userId', registerMeal)
+  app.post('/', registerMeal)
 
   // get all user meals
-  app.get(':userId', FetchUserMeals)
+  app.get('/', fetchUserMeals)
+
+  // get meal by id
+  app.get(':mealId', findMealById)
+
   // edit meal
+  app.put(':mealId', editMeal)
+
   // delete meal
-  // get meal
+  app.delete(':mealId', deleteMeal)
+
+  // user metrics
+  app.get('/metrics', metrics)
 }
