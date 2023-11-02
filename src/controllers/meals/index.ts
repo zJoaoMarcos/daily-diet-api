@@ -17,13 +17,13 @@ export async function MealsRoutes(app: FastifyInstance) {
   app.get('', fetchUserMeals)
 
   // get meal by id
-  app.get(':mealId', findMealById)
+  app.get('/:mealId', findMealById)
 
   // edit meal
-  app.put(':mealId', editMeal)
+  app.put('/:mealId', editMeal)
 
   // delete meal
-  app.delete(':mealId', deleteMeal)
+  app.delete('/:mealId', deleteMeal)
 
   // user metrics
   app.get('/metrics', metrics)
