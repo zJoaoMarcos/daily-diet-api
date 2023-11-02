@@ -24,7 +24,6 @@ export async function editMeal(request: FastifyRequest, reply: FastifyReply) {
     const meal = await knex('meals').where('id', mealId).first().select('*')
 
     if (meal) {
-      console.log(meal)
       await knex('meals').where('id', mealId).update({
         name,
         description,
