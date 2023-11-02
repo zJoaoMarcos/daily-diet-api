@@ -7,4 +7,4 @@ export const app = fastify()
 
 app.register(cookie)
 
-app.register(MealsRoutes, { prefix: 'meals/' })
+app.register(MealsRoutes, { prefix: 'meals' })

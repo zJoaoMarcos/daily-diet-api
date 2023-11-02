@@ -11,10 +11,10 @@ export async function MealsRoutes(app: FastifyInstance) {
   app.addHook('preHandler', checkSessionIdExists)
 
   // create meal
-  app.post('/', registerMeal)
+  app.post('', registerMeal)
 
   // get all user meals
-  app.get('/', fetchUserMeals)
+  app.get('', fetchUserMeals)
 
   // get meal by id
   app.get(':mealId', findMealById)

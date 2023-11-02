@@ -9,6 +9,11 @@ export async function metrics(request: FastifyRequest, reply: FastifyReply) {
       .where('session_id', sessionId)
       .orderBy('meal_time')
       .select('*')
+
+    if (!allMeals) {
+      return reply.status(404).send({ message: 'meals not found.' })
+    }
+
     const inDiet = allMeals.filter((meal) => meal.its_in_the_diet).length
     const outDiet = allMeals.filter((meal) => !meal.its_in_the_diet).length
 
@@ -30,5 +35,7 @@ export async function metrics(request: FastifyRequest, reply: FastifyReply) {
     })
 
     return reply.status(202).send({ inDiet, outDiet, currentBestSequenceDiet })
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 }

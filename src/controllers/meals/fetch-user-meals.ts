@@ -8,17 +8,24 @@ export async function fetchUserMeals(
   const { sessionId } = request.cookies
 
   try {
-    const meals = await knex('meals').where('session_id', sessionId).select('*')
+    const response = await knex('meals')
+      .where('session_id', sessionId)
+      .select('*')
 
-    if (meals) {
-      const mealsMapped = meals.map((meal) => {
+    if (response) {
+      const meals = response.map((meal) => {
         return {
-          ...meal,
-          its_in_the_diet: !!meal.its_in_the_diet,
+          id: meal.id,
+          name: meal.name,
+          description: meal.description,
+          mealTime: meal.meal_time,
+          itsInTheDiet: !!meal.its_in_the_diet,
+          createdAt: meal.created_at,
+          sessionId: meal.session_id,
         }
       })
 
-      return reply.status(202).send({ mealsMapped })
+      return reply.status(202).send({ meals })
     }
 
     return reply.status(404).send({ message: 'meals not found.' })
